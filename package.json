@@ -1,0 +1,26 @@
+{
+  "name": "vanguard-monorepo",
+  "version": "1.0.0",
+  "description": "A monorepo with Angular frontend and Spring Boot backend",
+  "private": true,
+  "workspaces": [
+    "apps/frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd apps/frontend && npm start",
+    "dev:backend": "cd apps/backend && ./mvnw spring-boot:run",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd apps/frontend && npm run build",
+    "build:backend": "cd apps/backend && ./mvnw clean package",
+    "install:frontend": "cd apps/frontend && npm install",
+    "install:backend": "cd apps/backend && ./mvnw dependency:resolve",
+    "setup": "npm run install:frontend && npm run install:backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["monorepo", "angular", "springboot", "typescript", "java"],
+  "author": "",
+  "license": "MIT"
+} 
