@@ -26,6 +26,9 @@
       "rxjs": [
         "./node_modules/rxjs"
       ],
+      "@angular/material": [
+        "../../node_modules/@angular/material"
+      ],
     }
   },
   "angularCompilerOptions": {
