@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,12 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class DynamoDBConfig {
 
-    private final AwsProperties awsProperties;
+    @Autowired
+    private AwsProperties awsProperties;
+
+//    public DynamoDBConfig(AwsProperties awsProperties) {
+//        this.awsProperties = awsProperties;
+//    }
 
     @Bean
     public DynamoDBMapper dynamoDBMapper() {
