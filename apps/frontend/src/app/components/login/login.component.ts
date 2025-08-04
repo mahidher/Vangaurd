@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           return;
         }
         console.log('Login successful:', user);
-        this.router.navigate([user.isAdmin ? '/admin' : `/userhome/${user.userId}`]);
+        this.router.navigate([user.isAdmin ? '/admin' : `/transactions`]);
       },
       error: error => {
         console.error('Login failed:', error);

@@ -1,0 +1,27 @@
+{
+      "current_balance": "47000",
+      "transaction_history": [
+        
+        {
+          "transaction_id": "T5913500093",
+          "transaction_type": "credit",
+          "amount": "3000",
+          "username": "Jeff",
+          "timestamp": "2025-06-01T09:30:00Z"
+        },
+        {
+          "transaction_id": "T1030072895",
+          "transaction_type": "debit",
+          "amount": "10000",
+          "username": "William",
+          "timestamp": "2025-04-06T13:30:00Z"
+        },
+        {
+          "transaction_id": "T1000032589",
+          "transaction_type": "credit",
+          "amount": "54000",
+          "username": "John",
+          "timestamp": "2025-01-03T00:30:00Z"
+        }
+      ]
+    }
