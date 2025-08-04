@@ -1,0 +1,68 @@
+package com.vanguard.backend.service;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
+import com.vanguard.backend.entity.User;
+import com.vanguard.backend.exception.UserException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public  class UserServiceImpl implements UserService{
+
+    private final DynamoDBMapper dynamoDBMapper;
+
+    @Override
+    public User createUser(User user) {
+        if (ObjectUtils.isEmpty(user)) {
+            throw new UserException("User details cannot be null");
+        }
+        dynamoDBMapper.save(user);
+        return user;
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        List<User> userList = dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
+        return userList;
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return dynamoDBMapper.load(User.class, id);
+    }
+
+    public Optional<User> updateUser(String userId, User updatedUser) {
+        dynamoDBMapper.save(updatedUser,
+                new DynamoDBSaveExpression()
+                        .withExpectedEntry("userId",
+                                new ExpectedAttributeValue(
+                                        new AttributeValue().withS(userId)
+                                )));
+        return Optional.ofNullable(updatedUser);
+    }
+
+    @Override
+    public String deleteUser(String id) {
+        if (!StringUtils.hasLength(id)) {
+            throw new UserException("User id cannot be null");
+        }
+        User user = dynamoDBMapper.load(User.class, id);
+        if (ObjectUtils.isEmpty(user)) {
+            throw new UserException("No data found");
+        }
+        dynamoDBMapper.delete(user);
+        return "User Deleted Successfully";
+    }
+}
