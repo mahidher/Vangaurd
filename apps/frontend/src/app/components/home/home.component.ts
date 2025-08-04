@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -39,16 +39,12 @@ interface ApiResponse {
   `,
     styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   result: ApiResponse | null = null;
   error: string | null = null;
   loading = false;
 
   constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
-    // Component initialization
-  }
 
   testBackendConnection(): void {
     this.loading = true;
