@@ -9,7 +9,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <header class="header">
         <h1>Vanguard Monorepo</h1>
         <nav>
-          <a routerLink="/" class="nav-link">Home</a>
+          <a routerLink="/home" class="nav-link">Home</a>
           <a routerLink="/login" class="nav-link">Login</a>
         </nav>
       </header>

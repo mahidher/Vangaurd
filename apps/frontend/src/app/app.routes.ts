@@ -15,7 +15,7 @@ export const routes: Routes = [
     loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
   },
   {
-    path: 'admin',
-    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
+    path: 'admin', //need to replace with actual admin component
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) 
   }
 ]; 
