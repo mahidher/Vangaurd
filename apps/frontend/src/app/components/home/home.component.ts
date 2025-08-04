@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
 
 interface ApiResponse {
   message: string;
@@ -9,7 +8,7 @@ interface ApiResponse {
 
 @Component({
     selector: 'app-home',
-    imports: [CommonModule],
+    imports: [],
     template: `
     <div class="home-container">
       <h2>Welcome to Vanguard</h2>
@@ -20,20 +19,22 @@ interface ApiResponse {
         <button (click)="testBackendConnection()" class="test-button" [disabled]="loading">
           {{ loading ? 'Testing...' : 'Test Backend Connection' }}
         </button>
-        
-        <div class="result" *ngIf="result">
-          <h4>Response from Backend:</h4>
-          <div class="response-box">
-            <p><strong>Message:</strong> {{ result.message }}</p>
-            <p><strong>Timestamp:</strong> {{ result.timestamp }}</p>
+        @if (result) {
+          <div class="result">
+            <h4>Response from Backend:</h4>
+            <div class="response-box">
+              <p><strong>Message:</strong> {{ result.message }}</p>
+              <p><strong>Timestamp:</strong> {{ result.timestamp }}</p>
+            </div>
           </div>
-        </div>
-        
-        <div class="error" *ngIf="error">
-          <h4>Error:</h4>
-          <p>{{ error }}</p>
-          <small>Make sure the Spring Boot backend is running on port 8080</small>
-        </div>
+        }
+        @if (error) {
+          <div class="error">
+            <h4>Error:</h4>
+            <p>{{ error }}</p>
+            <small>Make sure the Spring Boot backend is running on port 8080</small>
+          </div>
+        }
       </div>
     </div>
   `,

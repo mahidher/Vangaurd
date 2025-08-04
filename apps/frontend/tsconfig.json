@@ -21,7 +21,15 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "paths": {
+      "rxjs": [
+        "./node_modules/rxjs"
+      ],
+      "@angular/material": [
+        "../../node_modules/@angular/material"
+      ],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
