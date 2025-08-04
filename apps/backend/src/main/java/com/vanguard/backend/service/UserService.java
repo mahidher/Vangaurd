@@ -7,5 +7,10 @@ public interface UserService{
 
     User saveUser(User user);
 
-   String deleteUser(String userId);
+    String updateUserDetails(String userId, User user);
+
+    User getUserDeatils(String userId);
+
+    String deleteUser(String userId);
+
 }

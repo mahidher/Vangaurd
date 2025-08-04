@@ -1,6 +1,9 @@
 package com.vanguard.backend.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.vanguard.backend.entity.User;
 import com.vanguard.backend.exception.UserException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,22 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
+    public String updateUserDetails(String userId, User user) {
+        dynamoDBMapper.save(user,
+                new DynamoDBSaveExpression()
+                        .withExpectedEntry("userId",
+                                new ExpectedAttributeValue(
+                                        new AttributeValue().withS(userId)
+                                )));
+        return userId;
+    }
+
+    @Override
+    public User getUserDeatils(String userId) {
+        return dynamoDBMapper.load(User.class, userId);
+    }
+
 
     @Override
     public String deleteUser(String id) {
@@ -39,4 +58,5 @@ public class UserServiceImpl implements UserService{
         dynamoDBMapper.delete(user);
         return "User Deleted Successfully";
     }
+
 }
