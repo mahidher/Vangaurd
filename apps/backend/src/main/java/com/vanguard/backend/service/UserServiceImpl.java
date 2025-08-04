@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.vanguard.backend.entity.User;
 import com.vanguard.backend.exception.UserException;
-import com.vanguard.backend.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -19,12 +19,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public  class UserServiceImpl implements UserService{
-    @Autowired
-    private DynamoDBMapper dynamoDBMapper;
 
-    @Autowired
-    private UserRepository userRepo;
+    private final DynamoDBMapper dynamoDBMapper;
 
     @Override
     public User createUser(User user) {
@@ -37,9 +35,9 @@ public  class UserServiceImpl implements UserService{
 
     @Override
     public List<User> getAllUser() {
-            List<User> userList = dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
-            return userList;
-        }
+        List<User> userList = dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
+        return userList;
+    }
 
     @Override
     public User getUserById(String id) {
@@ -47,12 +45,14 @@ public  class UserServiceImpl implements UserService{
     }
 
     public Optional<User> updateUser(String userId, User updatedUser) {
-        return userRepo.findById(userId).map(existing -> {
-        existing.setUserId(updatedUser.getUserId());
-        existing.setUserName(updatedUser.getUserName());
-        return userRepo.save(existing);
-    });
-}
+        dynamoDBMapper.save(updatedUser,
+                new DynamoDBSaveExpression()
+                        .withExpectedEntry("userId",
+                                new ExpectedAttributeValue(
+                                        new AttributeValue().withS(userId)
+                                )));
+        return Optional.ofNullable(updatedUser);
+    }
 
     private DynamoDBSaveExpression buildExpression(User user) {
         DynamoDBSaveExpression dynamoDBSaveExpression = new DynamoDBSaveExpression();
@@ -63,7 +63,7 @@ public  class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User deleteuser(String id) {
+    public String deleteUser(String id) {
         if (!StringUtils.hasLength(id)) {
             throw new UserException("User id cannot be null");
         }
@@ -72,9 +72,6 @@ public  class UserServiceImpl implements UserService{
             throw new UserException("No data found");
         }
         dynamoDBMapper.delete(user);
-        return user;
+        return "User Deleted Successfully";
     }
 }
-
-
-

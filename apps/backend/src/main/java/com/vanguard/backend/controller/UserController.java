@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired(required=true)
+    @Autowired
     private UserService userService;
 
     @PostMapping
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable("userId") String userId) {
-        return new ResponseEntity<>(userService.deleteuser(userId), HttpStatus.OK);
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) {
+        return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
     }
 }
