@@ -1,0 +1,79 @@
+<div class="transactions-container">
+    <h4 class="current-balance">Current Balance: <small class="balance-amount">{{currentBalance | currency}}</small>
+    </h4>
+    <div class="d-flex">
+        <h3>Transaction History</h3>
+        <button mat-raised-button color="primary" (click)="openDialog()">Transfer Funds</button>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <h3>Transaction History</h3>
+        <ng-container matColumnDef="transaction_id">
+            <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
+            <td mat-cell *matCellDef="let element">{{ element.transaction_id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+            <td mat-cell *matCellDef="let element">{{ element.timestamp | date: 'MMM dd, yyyy HH:mm:ss' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Recipient</th>
+            <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="transaction_type">
+            <th mat-header-cell *matHeaderCellDef>Transaction type</th>
+            <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let element" [ngClass]="element.transaction_type == 'credit' ? 'green' : 'red'">{{ element.amount | currency }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
+</div>
+
+<!-- Dialog Template -->
+<ng-template #dialogTemplate>
+    <h2 mat-dialog-title>Transfer Funds</h2>
+    <form [formGroup]="transferFundsForm" (ngSubmit)="transferFunds()" class="dialog-form">
+        <mat-form-field appearance="fill">
+            <mat-label>Recipient</mat-label>
+            <mat-select formControlName="toUsername">
+                @for (user of userList; track user) {
+                <mat-option [value]="user.userName">{{user.userName}}</mat-option>
+                }
+            </mat-select>
+            <mat-error
+                *ngIf="transferFundsForm.get('toUsername')?.invalid && transferFundsForm.get('toUsername')?.touched">
+                Required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Amount</mat-label>
+            <input matInput formControlName="amount" />
+            <mat-error
+                *ngIf="transferFundsForm.get('amount')?.touched && transferFundsForm.get('amount')?.hasError('required')">
+                Required
+            </mat-error>
+            <mat-error
+                *ngIf="transferFundsForm.get('amount')?.touched && transferFundsForm.get('amount')?.hasError('pattern')">
+                Invalid amount
+            </mat-error>
+        </mat-form-field>
+
+        <div class="dialog-actions">
+            <button mat-button type="button" (click)="transferFundDialogRef.close()"
+                [disabled]="loading">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading">Submit</button>
+        </div>
+    </form>
+</ng-template>

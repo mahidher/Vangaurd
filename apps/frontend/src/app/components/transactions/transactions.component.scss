@@ -1,0 +1,53 @@
+.transactions-container {
+    width: 90%;
+    margin: 0.5rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h4.current-balance {
+        margin-top: 0.2rem;
+        margin-bottom: 0.2rem;
+        color: rgb(96, 96, 211);
+
+        .balance-amount {
+            color: black;
+            font-weight: 500;
+        }
+    }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    table {
+        width: 100%;
+
+        .green {
+            color: green;
+        }
+        .red {
+            color: red;
+        }
+    }
+}
+
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+}

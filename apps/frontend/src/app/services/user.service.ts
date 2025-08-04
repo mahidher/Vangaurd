@@ -11,9 +11,9 @@ export class UserService {
   loggedInUser$ = new BehaviorSubject<User | null>(null);
   constructor(private http: HttpClient) { }
 
-  login(userName: string) : Observable<User> {
+  login(userName: string): Observable<User> {
     return this.http.get<User[]>('/assets/data/users.json').pipe(
-      map((users:User[]) =>  {
+      map((users: User[]) => {
         const user = users?.find(u => u.userName === userName);
         if (!user) {
           throw new Error('User not found');
@@ -40,5 +40,34 @@ export class UserService {
     //     return throwError(() => error);
     //   })
     // );
+  }
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>('/assets/data/users.json').pipe(
+      map((users: User[]) => {
+        return users;
+      }),
+      catchError((error) => {
+        console.error('Login error:', error);
+        return throwError(() => error);
+      })
+    )
+
+    /* return this.http.get<User[]>('/users').pipe(
+      map((response: User[]) => {
+        if (!response) {
+          throw new Error('Users list error');
+        }
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Users list error:', error);
+        return throwError(() => error);
+      })
+    ); */
+  }
+
+  getLoggedInUserValue(): User | null {
+    return this.loggedInUser$.value;
   }
 }
