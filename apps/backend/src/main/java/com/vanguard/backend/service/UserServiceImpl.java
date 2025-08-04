@@ -53,14 +53,6 @@ public  class UserServiceImpl implements UserService{
         return Optional.ofNullable(updatedUser);
     }
 
-    private DynamoDBSaveExpression buildExpression(User user) {
-        DynamoDBSaveExpression dynamoDBSaveExpression = new DynamoDBSaveExpression();
-        Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-        expectedAttributeValueMap.put("id", new ExpectedAttributeValue(new AttributeValue().withS(user.getUserId())));
-        dynamoDBSaveExpression.setExpected(expectedAttributeValueMap);
-        return dynamoDBSaveExpression;
-    }
-
     @Override
     public String deleteUser(String id) {
         if (!StringUtils.hasLength(id)) {
