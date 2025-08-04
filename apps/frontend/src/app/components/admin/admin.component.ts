@@ -7,8 +7,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { UserDialogComponent, UserDialogData } from '../user-dialog/user-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 interface User {
   id: number;
@@ -28,17 +29,14 @@ interface User {
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
-  router = inject(Router);
-
-  goHome() {
-    this.router.navigate(['/']);
-  }
+  
   displayedColumns: string[] = ['select', 'name', 'email', 'actions'];
 
   users: User[] = [
@@ -46,6 +44,8 @@ export class AdminComponent {
     { id: 2, name: 'Arjun R', email: 'arjun@example.com' },
     { id: 3, name: 'Sneha V', email: 'sneha@example.com' }
   ];
+
+  constructor(private dialog: MatDialog) {}
 
   toggleSelectAll(checked: boolean): void {
     this.users.forEach(user => user.selected = checked);
@@ -55,26 +55,57 @@ export class AdminComponent {
     this.users = this.users.filter(u => u.id !== user.id);
   }
 
+  createUser(): void {
+    const dialogRef = this.dialog.open<UserDialogComponent, UserDialogData, any>(UserDialogComponent, {
+      data: {
+        user: { name: '', email: '' },
+        isEdit: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const id = this.users.length ? Math.max(...this.users.map(u => u.id)) + 1 : 1;
+        // Assign a new array to trigger change detection
+        this.users = [...this.users, { id, ...result }];
+      }
+    });
+  }
+
   editUser(user: User): void {
-    alert(`Editing user: ${user.name}`);
+    const dialogRef = this.dialog.open<UserDialogComponent, UserDialogData, any>(UserDialogComponent, {
+      data: {
+        user: { ...user },
+        isEdit: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        Object.assign(user, result);
+      }
+    });
   }
 
   deleteSelected(): void {
     this.users = this.users.filter(u => !u.selected);
   }
 
-  editSelected(): void {
+  async editSelected(): Promise<void> {
     const selected = this.users.filter(u => u.selected);
-    alert(`Editing users: ${selected.map(u => u.name).join(', ')}`);
-  }
+    for (const user of selected) {
+      // eslint-disable-next-line no-await-in-loop
+      const result = await this.dialog.open<UserDialogComponent, UserDialogData, any>(UserDialogComponent, {
+        data: {
+          user: { ...user },
+          isEdit: true
+        }
+      }).afterClosed().toPromise();
 
-  createUser(): void {
-    const id = this.users.length + 1;
-    this.users.push({
-      id,
-      name: `New User ${id}`,
-      email: `newuser${id}@example.com`
-    });
+      if (result) {
+        Object.assign(user, result);
+      }
+    }
   }
 
   hasSelectedUsers(): boolean {

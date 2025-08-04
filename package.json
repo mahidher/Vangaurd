@@ -7,6 +7,7 @@
     "apps/frontend"
   ],
   "scripts": {
+    "start": "ng serve",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd apps/frontend && npm start",
     "dev:backend": "cd apps/backend && ./mvnw spring-boot:run",
