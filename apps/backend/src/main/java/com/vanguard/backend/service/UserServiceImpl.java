@@ -8,7 +8,6 @@ import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.vanguard.backend.entity.User;
 import com.vanguard.backend.exception.UserException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
