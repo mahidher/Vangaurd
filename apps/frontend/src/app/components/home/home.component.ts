@@ -8,10 +8,9 @@ interface ApiResponse {
 }
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-home',
+    imports: [CommonModule],
+    template: `
     <div class="home-container">
       <h2>Welcome to Vanguard</h2>
       <p>This is a modern monorepo with Angular frontend and Spring Boot backend.</p>
@@ -38,7 +37,7 @@ interface ApiResponse {
       </div>
     </div>
   `,
-  styleUrls: ['./home.component.scss']
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   result: ApiResponse | null = null;

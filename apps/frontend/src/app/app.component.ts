@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  template: `
+    selector: 'app-root',
+    imports: [RouterOutlet],
+    template: `
     <div class="app-container">
       <header class="header">
         <h1>Vanguard Monorepo</h1>
@@ -18,7 +17,7 @@ import { RouterOutlet } from '@angular/router';
       </main>
     </div>
   `,
-  styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'vanguard-frontend';
