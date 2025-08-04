@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, RouterLink],
     template: `
     <div class="app-container">
       <header class="header">
         <h1>Vanguard Monorepo</h1>
         <nav>
           <a routerLink="/home" class="nav-link">Home</a>
+          <a routerLink="/login" class="nav-link">Login</a>
         </nav>
       </header>
       <main class="main-content">
