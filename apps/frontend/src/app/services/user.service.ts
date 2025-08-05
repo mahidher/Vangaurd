@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, delay, map, throwError } from 'rxjs';
 import { User } from '../models';
 import { Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ export class UserService {
 
   login(userName: string): Observable<User> {
     return this.http.get<User[]>('/assets/data/users.json').pipe(
+      delay(1000), // Simulate network delay- meed to remove this after api ready
       map((users: User[]) => {
         const user = users?.find(u => u.userName === userName);
         if (!user) {
