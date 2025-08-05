@@ -1,0 +1,22 @@
+[
+    {
+        "userId": "A1234",
+        "userName": "Aayush",
+        "isAdmin": true
+    },
+    {
+        "userId": "B1234",
+        "userName": "Brian",
+        "isAdmin": false
+    },
+    {
+        "userId": "C1234",
+        "userName": "Chris",
+        "isAdmin": false
+    },
+    {
+        "userId": "D1234",
+        "userName": "Daniel",
+        "isAdmin": false
+    }
+]

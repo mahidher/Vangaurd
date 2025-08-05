@@ -1,14 +1,12 @@
-// src/app/app.config.ts
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { AdminComponent } from './components/admin/admin.component';
+import { provideHttpClient } from '@angular/common/http';
 
-export const appConfig = {
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter([
-      { path: 'home', component: HomeComponent },
-      { path: 'admin', component: AdminComponent },
-      { path: '**', redirectTo: 'home' } // Optional wildcard
-    ])
+    provideRouter(routes),
+    provideHttpClient()
   ]
-};
+}; 
