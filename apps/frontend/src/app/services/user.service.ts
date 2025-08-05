@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
 import { User } from '../models';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { User } from '../models';
 export class UserService {
 
   loggedInUser$ = new BehaviorSubject<User | null>(null);
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(userName: string): Observable<User> {
     return this.http.get<User[]>('/assets/data/users.json').pipe(
@@ -69,5 +70,10 @@ export class UserService {
 
   getLoggedInUserValue(): User | null {
     return this.loggedInUser$.value;
+  }
+
+  logout(): void {
+    this.loggedInUser$.next(null);
+    this.router.navigate(['/login']);
   }
 }
