@@ -15,6 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/transfers")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class TransferController {
 

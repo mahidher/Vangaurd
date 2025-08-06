@@ -18,11 +18,13 @@ export const routes: Routes = [
   },
   {
     path: 'admin', 
-    loadComponent: () => import('./components/admin/admin.component').then(m => m.AdminComponent) 
+    loadComponent: () => import('./components/admin/admin.component').then(m => m.AdminComponent),
+    canActivate: [AuthService]
   },
   {
     path: 'analytics', 
-    loadComponent: () => import('./components/transaction-analytics/transaction-analytics.component').then(m => m.TransactionAnalyticsComponent) 
+    loadComponent: () => import('./components/transaction-analytics/transaction-analytics.component').then(m => m.TransactionAnalyticsComponent),
+    canActivate: [AuthService]
   },
   {
     path: 'transactions',
