@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.showLoader = false;
       return;
     }
-    this.loginSubscription = this.userService.login(this.username.toLowerCase()).subscribe({
+    this.loginSubscription = this.userService.login(this.username).subscribe({
       next: (user: User) => {
         if (!user) {
           alert('Login failed. Please check your username.');
