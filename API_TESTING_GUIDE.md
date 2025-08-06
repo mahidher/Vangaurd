@@ -57,6 +57,18 @@ curl -X POST http://localhost:8080/api/users \
   }'
 ```
 
+#### Test Duplicate Username (Should Fail)
+```bash
+# Try to create a user with an existing username
+curl -X POST http://localhost:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userName": "alice",
+    "balance": 500.00
+  }'
+```
+**Expected Result:** This should return an error since "alice" already exists.
+
 ### 2. Get All Users
 ```bash
 curl -X GET http://localhost:8080/api/users
@@ -67,31 +79,50 @@ curl -X GET http://localhost:8080/api/users
 curl -X GET http://localhost:8080/api/users | jq .
 ```
 
-### 3. Get User by ID
+### 3. Get User by Username
 ```bash
-# Replace USER_ID_HERE with actual user ID from create response
-curl -X GET http://localhost:8080/api/users/USER_ID_HERE
+# Replace USERNAME_HERE with actual username
+curl -X GET http://localhost:8080/api/users/USERNAME_HERE
 ```
 
-#### Example with Sample ID
+#### Example with Sample Username
 ```bash
-curl -X GET http://localhost:8080/api/users/12345678-1234-1234-1234-123456789abc
+curl -X GET http://localhost:8080/api/users/alice
 ```
 
-### 4. Update User
+### 4. Get User Summary (Balance + Transactions)
+```bash
+# Get complete user summary including balance and all transactions
+curl -X GET http://localhost:8080/api/users/alice/summary
+```
+
+#### With JSON Formatting
+```bash
+curl -X GET http://localhost:8080/api/users/alice/summary | jq .
+```
+
+**Response includes:**
+- User balance and creation date
+- All transactions in chronological order (newest first)
+- Each transaction has a "type" flag: "SENT" or "RECEIVED"
+- Transaction totals and counts
+
+### 5. Update User
 
 #### Update Username Only
 ```bash
-curl -X PUT http://localhost:8080/api/users/USER_ID_HERE \
+curl -X PUT http://localhost:8080/api/users/alice \
   -H "Content-Type: application/json" \
   -d '{
     "userName": "alice_updated"
   }'
 ```
 
+**⚠️ Important:** When updating a username, ALL related transactions are automatically updated to maintain referential integrity.
+
 #### Update Username and Balance
 ```bash
-curl -X PUT http://localhost:8080/api/users/USER_ID_HERE \
+curl -X PUT http://localhost:8080/api/users/bob \
   -H "Content-Type: application/json" \
   -d '{
     "userName": "bob_millionaire",
@@ -99,11 +130,10 @@ curl -X PUT http://localhost:8080/api/users/USER_ID_HERE \
   }'
 ```
 
-### 5. Delete User
+### 6. Delete User
 ```bash
-curl -X DELETE http://localhost:8080/api/users/USER_ID_HERE
+curl -X DELETE http://localhost:8080/api/users/alice
 ```
-
 ---
 
 ## 💸 Transfer & Transaction APIs
@@ -115,8 +145,8 @@ curl -X DELETE http://localhost:8080/api/users/USER_ID_HERE
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "FROM_USER_ID_HERE",
-    "toUserId": "TO_USER_ID_HERE",
+    "fromUserName": "bob",
+    "toUserName": "bob_millionaire",
     "amount": 250.00,
     "description": "Payment for services"
   }'
@@ -128,8 +158,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "FROM_USER_ID_HERE",
-    "toUserId": "TO_USER_ID_HERE",
+    "fromUserName": "FROM_USER_NAME_HERE",
+    "toUserName": "TO_USER_NAME_HERE",
     "amount": 50.25,
     "description": "Coffee money"
   }'
@@ -138,8 +168,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "FROM_USER_ID_HERE",
-    "toUserId": "TO_USER_ID_HERE",
+    "fromUserName": "FROM_USER_NAME_HERE",
+    "toUserName": "TO_USER_NAME_HERE",
     "amount": 1000.00,
     "description": "Rent payment"
   }'
@@ -150,8 +180,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "FROM_USER_ID_HERE",
-    "toUserId": "TO_USER_ID_HERE",
+    "fromUserName": "FROM_USER_NAME_HERE",
+    "toUserName": "TO_USER_NAME_HERE",
     "amount": 100.00
   }'
 ```
@@ -214,8 +244,8 @@ curl -X GET http://localhost:8080/api/users/BOB_ID_HERE
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "ALICE_ID_HERE",
-    "toUserId": "BOB_ID_HERE",
+    "fromUserName": "alice",
+    "toUserName": "bob",
     "amount": 250.00,
     "description": "Test transfer from Alice to Bob"
   }'
@@ -245,8 +275,8 @@ curl -X GET http://localhost:8080/api/transfers
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "USER_WITH_LOW_BALANCE_ID",
-    "toUserId": "ANOTHER_USER_ID",
+    "fromUserName": "user_with_low_balance",
+    "toUserName": "another_user",
     "amount": 99999.00,
     "description": "This should fail - insufficient balance"
   }'
@@ -257,8 +287,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "VALID_USER_ID",
-    "toUserId": "non-existent-user-id",
+    "fromUserName": "valid_user",
+    "toUserName": "non_existent_user",
     "amount": 100.00,
     "description": "This should fail - user not found"
   }'
@@ -269,8 +299,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "non-existent-user-id",
-    "toUserId": "VALID_USER_ID",
+    "fromUserName": "non_existent_user",
+    "toUserName": "valid_user",
     "amount": 100.00,
     "description": "This should fail - user not found"
   }'
@@ -281,8 +311,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "SAME_USER_ID",
-    "toUserId": "SAME_USER_ID",
+    "fromUserName": "same_user",
+    "toUserName": "same_user",
     "amount": 100.00,
     "description": "This should fail - same user"
   }'
@@ -293,8 +323,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "VALID_USER_ID_1",
-    "toUserId": "VALID_USER_ID_2",
+    "fromUserName": "valid_user_1",
+    "toUserName": "valid_user_2",
     "amount": -100.00,
     "description": "This should fail - negative amount"
   }'
@@ -305,8 +335,8 @@ curl -X POST http://localhost:8080/api/transfers \
 curl -X POST http://localhost:8080/api/transfers \
   -H "Content-Type: application/json" \
   -d '{
-    "fromUserId": "VALID_USER_ID_1",
-    "toUserId": "VALID_USER_ID_2",
+    "fromUserName": "valid_user_1",
+    "toUserName": "valid_user_2",
     "amount": 0.00,
     "description": "This should fail - zero amount"
   }'
@@ -329,7 +359,7 @@ curl -X GET http://localhost:8080/api/transfers/non-existent-transaction-id
 ### User Response
 ```json
 {
-  "userId": "12345678-1234-1234-1234-123456789abc",
+      "userName": "sample_user",
   "userName": "alice",
   "balance": 1000.00,
   "createdAt": "2025-08-04T19:30:45.123456"
@@ -340,8 +370,8 @@ curl -X GET http://localhost:8080/api/transfers/non-existent-transaction-id
 ```json
 {
   "transactionId": "txn-12345678-1234-1234-1234-123456789abc",
-  "fromUserId": "user-123",
-  "toUserId": "user-456",
+      "fromUserName": "user_123",
+    "toUserName": "user_456",
   "amount": 250.00,
   "timestamp": "2025-08-04T19:35:20.789012",
   "description": "Payment for services"
@@ -391,7 +421,7 @@ curl -s -X GET $BASE_URL/api/users | jq .
 # Transfer funds
 echo "💸 Transferring funds..."
 # curl -s -X POST $BASE_URL/api/transfers -H "Content-Type: application/json" \
-#   -d "{\"fromUserId\": \"$ALICE_ID\", \"toUserId\": \"$BOB_ID\", \"amount\": 250.00, \"description\": \"Test transfer\"}" | jq .
+#   -d "{\"fromUserName\": \"alice\", \"toUserName\": \"bob\", \"amount\": 250.00, \"description\": \"Test transfer\"}" | jq .
 
 # Get transactions
 echo "📊 Getting transaction history..."

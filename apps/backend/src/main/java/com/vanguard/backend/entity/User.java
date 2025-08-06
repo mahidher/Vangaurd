@@ -16,21 +16,11 @@ import java.time.LocalDateTime;
 @DynamoDbBean
 public class User {
 
-    private String userId;
     private String userName;
     private BigDecimal balance;
     private LocalDateTime createdAt;
 
     @DynamoDbPartitionKey
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    @DynamoDbAttribute("userName")
     public String getUserName() {
         return userName;
     }
