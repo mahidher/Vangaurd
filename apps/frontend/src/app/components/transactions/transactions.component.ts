@@ -16,13 +16,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Transaction, TransactionListResponse, User } from 'src/app/models';
+import { Transaction, User } from 'src/app/models';
 import { TransactionsService } from 'src/app/services/transactions.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-transactions',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -40,8 +39,8 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class TransactionsComponent {
   loading: boolean = false;
-  currentBalance: string | number = '';
-  displayedColumns: string[] = ['transaction_id', 'timestamp', 'username', 'transaction_type', 'amount'];
+  currentBalance: number | undefined;
+  displayedColumns: string[] = ['transactionId', 'timestamp', 'fromUserName', 'toUserName', 'description', 'amount'];
   dataSource = new MatTableDataSource<Transaction>([]);
 
   userList: User[] = [];
@@ -59,6 +58,7 @@ export class TransactionsComponent {
   ) { }
 
   ngOnInit() {
+    this.currentBalance = this.userService.getLoggedInUserValue()?.balance;
     this.getTransactionHistory();
   }
 
@@ -67,12 +67,10 @@ export class TransactionsComponent {
   }
 
   getTransactionHistory() {
-    this.transactionService.transactionHistory(this.userService.getLoggedInUserValue()?.userId)
+    this.transactionService.transactionHistory()
       .subscribe({
-        next: (response: TransactionListResponse) => {
-          const transactionListResponse = response;
-          this.currentBalance = response.current_balance;
-          this.dataSource.data = transactionListResponse.transaction_history;
+        next: (response: Transaction[]) => {
+          this.dataSource.data = response;
           this.loading = false;
         },
         error: (err) => {
@@ -84,9 +82,10 @@ export class TransactionsComponent {
 
   openDialog() {
     this.transferFundsForm = this.fb.group({
-      'fromUsername': [this.userService.getLoggedInUserValue()?.userName],
-      'toUsername': ['', [Validators.required]],
-      'amount': [null, [Validators.required, Validators.pattern(/^\d+$/)]]
+      'fromUserName': [this.userService.getLoggedInUserValue()?.userName],
+      'toUserName': ['', [Validators.required]],
+      'amount': [null, [Validators.required, Validators.pattern(/^\d+$/), Validators.min(1)]],
+      'description': ['']
     });
 
     this.getUserList();
@@ -100,7 +99,8 @@ export class TransactionsComponent {
     this.userService.getUsers()
       .subscribe({
         next: (response: User[]) => {
-          this.userList = response;
+          //To remove current user from user list
+          this.userList = response.filter((user: User) => user.userName != this.userService.getLoggedInUserValue()?.userName);
         },
         error: (err) => {
           this.showError(err);
@@ -111,36 +111,23 @@ export class TransactionsComponent {
   transferFunds() {
     this.transferFundsForm.markAllAsTouched();
     if (this.transferFundsForm.valid) {
-      if (+this.currentBalance < +this.transferFundsForm.value.amount) {
-        this.showError("Insufficient Funds");
-        return;
-      }
-
       this.loading = true;
-      let newData: Transaction = {
-        ...this.transferFundsForm.value,
-        transaction_id: 'T5913500045',
-        transaction_type: 'debit',
-        username: this.transferFundsForm.value.toUsername,
-        timestamp: new Date()
-      };
-      this.dataSource.data = [newData, ...this.dataSource.data];
-      this.currentBalance = +this.currentBalance - +newData.amount;
-      this.loading = false;
-      this.transferFundDialogRef.close();
 
-      /* this.transactionService.transferFunds(this.transferFundsForm.value)
+      this.transactionService.transferFunds(this.transferFundsForm.value)
         .subscribe({
           next: (response: Transaction) => {
             this.dataSource.data = [...this.dataSource.data, response];
             this.loading = false;
             this.transferFundDialogRef.close();
+
+            if (this.currentBalance)
+              this.currentBalance = this.currentBalance - this.transferFundsForm.value.amount;
           },
           error: (err) => {
-            this.showError(err);
+            this.showError(err.message);
             this.loading = false;
           }
-        }); */
+        });
     }
   }
 
