@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 export const routes: Routes = [
 
@@ -25,7 +26,8 @@ export const routes: Routes = [
   },
   {
     path: 'transactions',
-    loadComponent: () => import('./components/transactions/transactions.component').then(m => m.TransactionsComponent) 
+    loadComponent: () => import('./components/transactions/transactions.component').then(m => m.TransactionsComponent),
+    canActivate: [AuthService]
   }
 
 ]; 

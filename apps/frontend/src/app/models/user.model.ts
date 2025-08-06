@@ -1,6 +1,6 @@
 export interface User {
-    userId: string;
+    userId?: string;
     userName: string;
-    isAdmin: boolean;
+    isAdmin?: boolean;
     balance?: number;
 }

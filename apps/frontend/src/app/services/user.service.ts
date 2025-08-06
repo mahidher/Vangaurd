@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, delay, map, throwError } from 'rxjs';
 import { User } from '../models';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,11 @@ import { User } from '../models';
 export class UserService {
 
   loggedInUser$ = new BehaviorSubject<User | null>(null);
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(userName: string): Observable<User> {
-    return this.http.get<User[]>('/assets/data/users.json').pipe(
-      map((users: User[]) => {
-        const user = users?.find(u => u.userName === userName);
+    return this.http.get<User>(`http://localhost:8080/api/users/${userName}`).pipe(
+      map((user: User) => {
         if (!user) {
           throw new Error('User not found');
         }
@@ -25,25 +25,11 @@ export class UserService {
         console.error('Login error:', error);
         return throwError(() => error);
       })
-    )
-    // -- Uncomment the following lines if you have a backend API to handle login -- //
-    // return this.http.post<User>('/api/login', { userName }).pipe(
-    //   map((user: User) => {
-    //     if (!user) {
-    //       throw new Error('User not found');
-    //     }
-    //     this.loggedInUser$.next(user);
-    //     return user;
-    //   }),
-    //   catchError((error) => {
-    //     console.error('Login error:', error);
-    //     return throwError(() => error);
-    //   })
-    // );
+    );
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>('/assets/data/users.json').pipe(
+    return this.http.get<User[]>('http://localhost:8080/api/users').pipe(
       map((users: User[]) => {
         return users;
       }),
@@ -53,7 +39,7 @@ export class UserService {
       })
     )
 
-    /* return this.http.get<User[]>('/users').pipe(
+    /* return this.http.get<User[]>(`http://localhost:8080/api/users`).pipe(
       map((response: User[]) => {
         if (!response) {
           throw new Error('Users list error');
@@ -69,5 +55,10 @@ export class UserService {
 
   getLoggedInUserValue(): User | null {
     return this.loggedInUser$.value;
+  }
+
+  logout(): void {
+    this.loggedInUser$.next(null);
+    this.router.navigate(['/login']);
   }
 }
