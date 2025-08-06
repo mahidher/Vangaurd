@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -26,11 +25,11 @@ public class TransferController {
     public ResponseEntity<Transaction> transferFunds(@RequestBody TransferRequest request) {
         try {
             log.info("Transfer request received: {} -> {}, amount: {}", 
-                request.getFromUserId(), request.getToUserId(), request.getAmount());
+                    request.getFromUserName(), request.getToUserName(), request.getAmount());
             
             Transaction transaction = transferService.transferFunds(
-                request.getFromUserId(),
-                request.getToUserId(),
+                request.getFromUserName(),
+                request.getToUserName(),
                 request.getAmount(),
                 request.getDescription()
             );
