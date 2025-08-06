@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Transaction, User } from 'src/app/models';
+import { Transaction, User, UserTransactionSummary } from 'src/app/models';
 import { TransactionsService } from 'src/app/services/transactions.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -40,7 +40,7 @@ import { UserService } from 'src/app/services/user.service';
 export class TransactionsComponent {
   loading: boolean = false;
   currentBalance: number | undefined;
-  displayedColumns: string[] = ['transactionId', 'timestamp', 'fromUserName', 'toUserName', 'description', 'amount'];
+  displayedColumns: string[] = ['transactionId', 'timestamp', 'description', 'amount'];
   dataSource = new MatTableDataSource<Transaction>([]);
 
   userList: User[] = [];
@@ -67,10 +67,10 @@ export class TransactionsComponent {
   }
 
   getTransactionHistory() {
-    this.transactionService.transactionHistory()
+    this.userService.userTransactions()
       .subscribe({
-        next: (response: Transaction[]) => {
-          this.dataSource.data = response;
+        next: (response: UserTransactionSummary) => {
+          this.dataSource.data = response.transactions;
           this.loading = false;
         },
         error: (err) => {
@@ -116,7 +116,8 @@ export class TransactionsComponent {
       this.transactionService.transferFunds(this.transferFundsForm.value)
         .subscribe({
           next: (response: Transaction) => {
-            this.dataSource.data = [...this.dataSource.data, response];
+            response.type = 'SENT';
+            this.dataSource.data = [response, ...this.dataSource.data];
             this.loading = false;
             this.transferFundDialogRef.close();
 

@@ -5,4 +5,5 @@ export interface Transaction {
   toUserName: string;
   timestamp?: Date;
   description?: string;
+  type?: string;
 }

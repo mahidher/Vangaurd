@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, delay, map, throwError } from 'rxjs';
-import { User } from '../models';
+import { User, UserTransactionSummary } from '../models';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -34,7 +34,19 @@ export class UserService {
         return users;
       }),
       catchError((error) => {
-        console.error('Login error:', error);
+        console.error('Users list error:', error);
+        return throwError(() => error);
+      })
+    )
+  }
+
+  userTransactions(): Observable<UserTransactionSummary> {
+    return this.http.get<UserTransactionSummary>(`http://localhost:8080/api/users/${this.getLoggedInUserValue()?.userName}/summary`).pipe(
+      map((response: UserTransactionSummary) => {
+        return response;
+      }),
+      catchError((error) => {
+        console.error('User Summary error:', error);
         return throwError(() => error);
       })
     )
