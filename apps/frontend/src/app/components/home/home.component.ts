@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 interface ApiResponse {
   message: string;
@@ -7,9 +9,11 @@ interface ApiResponse {
 }
 
 @Component({
-    selector: 'app-home',
-    imports: [],
-    template: `
+  selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, HttpClientModule],
+  template: `
+
     <div class="home-container">
       <h2>Welcome to Vanguard</h2>
       <p>This is a modern monorepo with Angular frontend and Spring Boot backend.</p>

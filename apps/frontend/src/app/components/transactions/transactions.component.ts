@@ -22,6 +22,7 @@ import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-transactions',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

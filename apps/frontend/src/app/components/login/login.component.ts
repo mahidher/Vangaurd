@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [FormsModule, MatButtonModule, MatInput, MatFormFieldModule],
   template: `
     <div class="login-container">
