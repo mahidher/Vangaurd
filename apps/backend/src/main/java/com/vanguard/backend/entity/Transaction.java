@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     private String transactionId;
-    private String fromUserId;
-    private String toUserId;
+    private String fromUserName;
+    private String toUserName;
     private BigDecimal amount;
     private LocalDateTime timestamp;
     private String description;
@@ -32,22 +32,22 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    @DynamoDbAttribute("fromUserId")
-    public String getFromUserId() {
-        return fromUserId;
+    @DynamoDbAttribute("fromUserName")
+    public String getFromUserName() {
+        return fromUserName;
     }
 
-    public void setFromUserId(String fromUserId) {
-        this.fromUserId = fromUserId;
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
     }
 
-    @DynamoDbAttribute("toUserId")
-    public String getToUserId() {
-        return toUserId;
+    @DynamoDbAttribute("toUserName")
+    public String getToUserName() {
+        return toUserName;
     }
 
-    public void setToUserId(String toUserId) {
-        this.toUserId = toUserId;
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
     }
 
     @DynamoDbAttribute("amount")

@@ -1,6 +1,7 @@
 package com.vanguard.backend.service;
 
 import com.vanguard.backend.entity.User;
+import com.vanguard.backend.model.UserSummary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +14,12 @@ public interface UserService{
 
     List<User> getAllUser();
 
-    User getUserById(String id);
+    User getUserByUserName(String userName);
 
-    Optional<User> updateUser(String userId, User user);
+    Optional<User> updateUser(String userName, User user);
 
-    String deleteUser(String id);
+    String deleteUser(String userName);
 
-
+    UserSummary getUserSummary(String userName);
 
 }

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserBalance {
     
-    private String userId;
     private String userName;
     private BigDecimal balance;
     private LocalDateTime lastUpdated;

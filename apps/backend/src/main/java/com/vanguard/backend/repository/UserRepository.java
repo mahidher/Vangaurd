@@ -28,8 +28,8 @@ public class UserRepository {
         userTable.putItem(user);
     }
 
-    public Optional<User> findById(String userId) {
-        var key = Key.builder().partitionValue(userId).build();
+    public Optional<User> findById(String userName) {
+        var key = Key.builder().partitionValue(userName).build();
         try {
             return Optional.ofNullable(userTable.getItem(key));
         } catch (ResourceNotFoundException e) {
@@ -37,8 +37,8 @@ public class UserRepository {
         }
     }
 
-    public void deleteById(String userId) {
-        var key = Key.builder().partitionValue(userId).build();
+    public void deleteById(String userName) {
+        var key = Key.builder().partitionValue(userName).build();
         userTable.deleteItem(key);
     }
 
@@ -51,5 +51,9 @@ public class UserRepository {
 
     public DynamoDbTable<User> getTable() {
         return userTable;
+    }
+    
+    public DynamoDbEnhancedClient getEnhancedClient() {
+        return enhancedClient;
     }
 }
