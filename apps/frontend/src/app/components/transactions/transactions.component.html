@@ -8,9 +8,9 @@
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <h3>Transaction History</h3>
-        <ng-container matColumnDef="transaction_id">
+        <ng-container matColumnDef="transactionId">
             <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
-            <td mat-cell *matCellDef="let element">{{ element.transaction_id }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.transactionId }}</td>
         </ng-container>
 
         <ng-container matColumnDef="timestamp">
@@ -18,19 +18,25 @@
             <td mat-cell *matCellDef="let element">{{ element.timestamp | date: 'MMM dd, yyyy HH:mm:ss' }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef>Recipient</th>
-            <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        <ng-container matColumnDef="fromUserName">
+            <th mat-header-cell *matHeaderCellDef>From</th>
+            <td mat-cell *matCellDef="let element">{{ element.fromUserName }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="transaction_type">
-            <th mat-header-cell *matHeaderCellDef>Transaction type</th>
-            <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
+        <ng-container matColumnDef="toUserName">
+            <th mat-header-cell *matHeaderCellDef>To</th>
+            <td mat-cell *matCellDef="let element">{{ element.toUserName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let element">{{ element.description }}</td>
         </ng-container>
 
         <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef>Amount</th>
-            <td mat-cell *matCellDef="let element" [ngClass]="element.transaction_type == 'credit' ? 'green' : 'red'">{{ element.amount | currency }}</td>
+            <td mat-cell *matCellDef="let element" class="red">{{
+                element.amount | currency }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -45,29 +51,36 @@
     <h2 mat-dialog-title>Transfer Funds</h2>
     <form [formGroup]="transferFundsForm" (ngSubmit)="transferFunds()" class="dialog-form">
         <mat-form-field appearance="fill">
-            <mat-label>Recipient</mat-label>
-            <mat-select formControlName="toUsername">
+            <mat-label>To</mat-label>
+            <mat-select formControlName="toUserName">
                 @for (user of userList; track user) {
                 <mat-option [value]="user.userName">{{user.userName}}</mat-option>
                 }
             </mat-select>
             <mat-error
-                *ngIf="transferFundsForm.get('toUsername')?.invalid && transferFundsForm.get('toUsername')?.touched">
+                *ngIf="transferFundsForm.get('toUserName')?.invalid && transferFundsForm.get('toUserName')?.touched">
                 Required
             </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
             <mat-label>Amount</mat-label>
-            <input matInput formControlName="amount" />
+            <input type="number" matInput formControlName="amount" />
             <mat-error
-                *ngIf="transferFundsForm.get('amount')?.touched && transferFundsForm.get('amount')?.hasError('required')">
+                *ngIf="transferFundsForm.get('amount')?.touched && transferFundsForm.get('amount')?.hasError('required'); else invalid">
                 Required
             </mat-error>
-            <mat-error
-                *ngIf="transferFundsForm.get('amount')?.touched && transferFundsForm.get('amount')?.hasError('pattern')">
-                Invalid amount
-            </mat-error>
+            <ng-template #invalid>
+                <mat-error>
+                    Invalid amount
+                </mat-error>
+            </ng-template>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
         </mat-form-field>
 
         <div class="dialog-actions">

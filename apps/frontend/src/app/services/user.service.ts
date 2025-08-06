@@ -38,19 +38,6 @@ export class UserService {
         return throwError(() => error);
       })
     )
-
-    /* return this.http.get<User[]>(`http://localhost:8080/api/users`).pipe(
-      map((response: User[]) => {
-        if (!response) {
-          throw new Error('Users list error');
-        }
-        return response;
-      }),
-      catchError((error) => {
-        console.error('Users list error:', error);
-        return throwError(() => error);
-      })
-    ); */
   }
 
   getLoggedInUserValue(): User | null {
