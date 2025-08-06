@@ -52,18 +52,30 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login(): void {
     this.showLoader = true;
-    this.loginSubscription = this.userService.login(this.username).subscribe({
+    if (this.username.trim().toLowerCase() === 'admin') {
+      const adminUser: User = {
+        userName: 'admin',
+        isAdmin: true
+      }
+      this.router.navigate(['/admin']);
+      this.userService.loggedInUser$.next(adminUser);
+      this.showLoader = false;
+      return;
+    }
+    this.loginSubscription = this.userService.login(this.username.toLowerCase()).subscribe({
       next: (user: User) => {
         if (!user) {
           alert('Login failed. Please check your username.');
           return;
         }
         console.log('Login successful:', user);
+        user.isAdmin = false;
         this.showLoader = false;
         this.router.navigate([user.isAdmin ? '/admin' : `/transactions`]);
       },
       error: error => {
         console.error('Login failed:', error);
+        this.showLoader = false;
         alert('Login failed. Please try again later.');
       }
     });

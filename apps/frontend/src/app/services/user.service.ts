@@ -13,10 +13,8 @@ export class UserService {
   constructor(private http: HttpClient, private router: Router) { }
 
   login(userName: string): Observable<User> {
-    return this.http.get<User[]>('/assets/data/users.json').pipe(
-      delay(1000), // Simulate network delay- meed to remove this after api ready
-      map((users: User[]) => {
-        const user = users?.find(u => u.userName === userName);
+    return this.http.get<User>(`http://localhost:8080/api/users/${userName}`).pipe(
+      map((user: User) => {
         if (!user) {
           throw new Error('User not found');
         }
@@ -27,25 +25,11 @@ export class UserService {
         console.error('Login error:', error);
         return throwError(() => error);
       })
-    )
-    // -- Uncomment the following lines if you have a backend API to handle login -- //
-    // return this.http.post<User>('/api/login', { userName }).pipe(
-    //   map((user: User) => {
-    //     if (!user) {
-    //       throw new Error('User not found');
-    //     }
-    //     this.loggedInUser$.next(user);
-    //     return user;
-    //   }),
-    //   catchError((error) => {
-    //     console.error('Login error:', error);
-    //     return throwError(() => error);
-    //   })
-    // );
+    );
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>('/assets/data/users.json').pipe(
+    return this.http.get<User[]>('http://localhost:8080/api/users').pipe(
       map((users: User[]) => {
         return users;
       }),
@@ -55,7 +39,7 @@ export class UserService {
       })
     )
 
-    /* return this.http.get<User[]>('/users').pipe(
+    /* return this.http.get<User[]>(`http://localhost:8080/api/users`).pipe(
       map((response: User[]) => {
         if (!response) {
           throw new Error('Users list error');
