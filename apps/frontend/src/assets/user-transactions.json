@@ -1,0 +1,17 @@
+[
+  {
+    "username": "ben",
+    "current_balance": 100,
+    "transaction_history": [
+      { "transaction_id": 1, "transaction_type": "credit", "amount": 12000, "timestamp": "2025-08-04T10:01:00" },
+      { "transaction_id": 2, "transaction_type": "debit", "amount": 10000, "timestamp": "2025-08-04T10:02:00" }
+    ]
+  },
+  {
+    "username": "alice",
+    "current_balance": 1000,
+    "transaction_history": [
+      { "transaction_id": 1, "transaction_type": "credit", "amount": 12000, "timestamp": "2025-08-04T10:01:00" }
+    ]
+  }
+]

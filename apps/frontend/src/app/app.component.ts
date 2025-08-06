@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
         </nav>
       </header>
       <main class="main-content">
+      
         <router-outlet></router-outlet>
       </main>
     </div>
