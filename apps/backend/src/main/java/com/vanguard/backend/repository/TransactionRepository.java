@@ -21,7 +21,7 @@ public class TransactionRepository {
 
     @PostConstruct
     public void init() {
-        transactionTable = enhancedClient.table("transactions", TableSchema.fromBean(Transaction.class));
+        transactionTable = enhancedClient.table("Transactions", TableSchema.fromBean(Transaction.class));
     }
 
     public void save(Transaction transaction) {
@@ -41,6 +41,31 @@ public class TransactionRepository {
         return transactionTable.scan(ScanEnhancedRequest.builder().build())
                 .items()
                 .stream()
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> findByFromUserName(String userName) {
+        return transactionTable.scan(ScanEnhancedRequest.builder().build())
+                .items()
+                .stream()
+                .filter(transaction -> userName.equals(transaction.getFromUserName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> findByToUserName(String userName) {
+        return transactionTable.scan(ScanEnhancedRequest.builder().build())
+                .items()
+                .stream()
+                .filter(transaction -> userName.equals(transaction.getToUserName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> findByUserName(String userName) {
+        return transactionTable.scan(ScanEnhancedRequest.builder().build())
+                .items()
+                .stream()
+                .filter(transaction -> userName.equals(transaction.getFromUserName()) || 
+                                    userName.equals(transaction.getToUserName()))
                 .collect(Collectors.toList());
     }
 

@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public class TransferResponse {
     
     private String transactionId;
-    private String fromUserId;
-    private String toUserId;
+    private String fromUserName;
+    private String toUserName;
     private BigDecimal amount;
     private LocalDateTime timestamp;
     private String description;
