@@ -20,6 +20,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/admin/admin.component').then(m => m.AdminComponent) 
   },
   {
+    path: 'analytics', 
+    loadComponent: () => import('./components/transaction-analytics/transaction-analytics.component').then(m => m.TransactionAnalyticsComponent) 
+  },
+  {
     path: 'transactions',
     loadComponent: () => import('./components/transactions/transactions.component').then(m => m.TransactionsComponent) 
   }

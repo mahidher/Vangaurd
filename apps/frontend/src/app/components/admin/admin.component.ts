@@ -10,10 +10,14 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDialogComponent, UserDialogData } from '../user-dialog/user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TransactionAnalyticsComponent } from '../transaction-analytics/transaction-analytics.component';
+import { AdminUser } from '../../models/admin-user.model';
+import { AdminUserService } from '../../services/admin-user.service';
 
 interface User {
   id: number;
   name: string;
+  username: string; // <-- Add this line
   email: string;
   selected?: boolean;
 }
@@ -36,23 +40,28 @@ interface User {
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
-  
   displayedColumns: string[] = ['select', 'name', 'email', 'actions'];
+  users: AdminUser[] = [];
 
-  users: User[] = [
-    { id: 1, name: 'Karthik J', email: 'karthik@example.com' },
-    { id: 2, name: 'Arjun R', email: 'arjun@example.com' },
-    { id: 3, name: 'Sneha V', email: 'sneha@example.com' }
-  ];
-
-  constructor(private dialog: MatDialog) {}
-
-  toggleSelectAll(checked: boolean): void {
-    this.users.forEach(user => user.selected = checked);
+  constructor(
+    private dialog: MatDialog,
+    private adminUserService: AdminUserService
+  ) {
+    this.adminUserService.getUsers().subscribe(users => {
+      this.users = users;
+    });
   }
 
-  deleteUser(user: User): void {
-    this.users = this.users.filter(u => u.id !== user.id);
+  private updateUsers(users: AdminUser[]) {
+    this.adminUserService.setUsers(users);
+  }
+
+  toggleSelectAll(checked: boolean): void {
+    this.updateUsers(this.users.map(user => ({ ...user, selected: checked })));
+  }
+
+  deleteUser(user: AdminUser): void {
+    this.updateUsers(this.users.filter(u => u.id !== user.id));
   }
 
   createUser(): void {
@@ -66,13 +75,12 @@ export class AdminComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const id = this.users.length ? Math.max(...this.users.map(u => u.id)) + 1 : 1;
-        // Assign a new array to trigger change detection
-        this.users = [...this.users, { id, ...result }];
+        this.updateUsers([...this.users, { id, ...result }]);
       }
     });
   }
 
-  editUser(user: User): void {
+  editUser(user: AdminUser): void {
     const dialogRef = this.dialog.open<UserDialogComponent, UserDialogData, any>(UserDialogComponent, {
       data: {
         user: { ...user },
@@ -82,13 +90,13 @@ export class AdminComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        Object.assign(user, result);
+        this.updateUsers(this.users.map(u => u.id === user.id ? { ...u, ...result } : u));
       }
     });
   }
 
   deleteSelected(): void {
-    this.users = this.users.filter(u => !u.selected);
+    this.updateUsers(this.users.filter(u => !u.selected));
   }
 
   async editSelected(): Promise<void> {
@@ -103,12 +111,20 @@ export class AdminComponent {
       }).afterClosed().toPromise();
 
       if (result) {
-        Object.assign(user, result);
+        this.updateUsers(this.users.map(u => u.id === user.id ? { ...u, ...result } : u));
       }
     }
   }
 
   hasSelectedUsers(): boolean {
     return Array.isArray(this.users) && this.users.some(u => u.selected);
+  }
+
+  viewAnalytics(user: AdminUser): void {
+    this.dialog.open(TransactionAnalyticsComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: { username: user.username }
+    });
   }
 }

@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  padding: 24px;
+  min-width: 320px;
+}
+
+.mat-dialog-content, .user-analytics-row {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.user-card {
+  border: 1px solid #ddd;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.user-analytics-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.user-analytics-row:last-child {
+  border-bottom: none;
+}
+
+.user-analytics-row button {
+  margin-left: 12px;
+}
+
+.red-flag {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.no-flag {
+  color: #388e3c;
+  font-weight: bold;
+}
