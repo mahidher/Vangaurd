@@ -1,7 +1,5 @@
 export interface AdminUser {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  selected?: boolean;
+  userName: string;
+  balance: number;
+  createdAt: string | null;
 }

@@ -1,90 +1,59 @@
-<mat-toolbar class="mat-toolbar" >
+<mat-toolbar class="mat-toolbar">
   <span>User Management</span>
   <span class="spacer"></span>
-  <button mat-icon-button matTooltip="Add New User" (click)="createUser()">
-    <mat-icon>add</mat-icon>
+  <button mat-flat-button color="primary" (click)="createUser()">
+    <mat-icon>person_add</mat-icon>
+    Create User
+  </button>
+  <button mat-stroked-button color="primary" (click)="runAnalytics()">
+    <mat-icon>analytics</mat-icon>
+    Run Analytics
   </button>
 </mat-toolbar>
 
-<div class="actions">
-  <button
-    mat-raised-button
-    color="accent"
-    (click)="editSelected()"
-    [disabled]="!hasSelectedUsers()"
-  >
-    ✏️ Edit Selected
-  </button>
-  <button
-    mat-raised-button
-    color="warn"
-    (click)="deleteSelected()"
-    [disabled]="!hasSelectedUsers()"
-  >
-    🗑️ Delete Selected
-  </button>
-</div>
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
 
-<table mat-table [dataSource]="users" class="mat-elevation-z2">
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
 
-  <!-- Select Checkbox -->
-  <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="toggleSelectAll($event.checked)"></mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let user">
-      <mat-checkbox
-        [(ngModel)]="user.selected"
-        [ngModelOptions]="{ standalone: true }"
-      ></mat-checkbox>
-    </td>
+  <!-- Username Column -->
+  <ng-container matColumnDef="userName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
+    <td mat-cell *matCellDef="let user">{{ user.userName }}</td>
   </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+  <!-- Balance Column -->
+  <ng-container matColumnDef="balance">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Balance</th>
+    <td mat-cell *matCellDef="let user">{{ user.balance | currency:'USD':'symbol' }}</td>
   </ng-container>
 
-  <!-- Email Column -->
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef>Email</th>
-    <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+  <!-- Created At Column -->
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
+    <td mat-cell *matCellDef="let user">{{ user.createdAt | date: 'MMM dd, yyyy HH:mm:ss' }}</td>
   </ng-container>
 
   <!-- Actions Column -->
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let user">
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="editUser(user)"
-        matTooltip="Edit"
-      >
+      <!-- Edit icon -->
+      <button mat-icon-button color="primary" matTooltip="Edit User" (click)="editUser(user)">
         <mat-icon>edit</mat-icon>
       </button>
-      <button
-        mat-icon-button
-        color="warn"
-        (click)="deleteUser(user)"
-        matTooltip="Delete"
-      >
+      <!-- Delete icon -->
+      <button mat-icon-button color="warn" matTooltip="Delete User" (click)="deleteUser(user)">
         <mat-icon>delete</mat-icon>
       </button>
-      <button
-        mat-icon-button
-        color="accent"
-        (click)="viewAnalytics(user)"
-        matTooltip="View Transactions"
-      >
+      <!-- Eye icon -->
+      <button mat-icon-button color="accent" matTooltip="View Transactions" (click)="viewAnalytics(user)">
         <mat-icon>visibility</mat-icon>
       </button>
     </td>
   </ng-container>
 
-  <!-- Table Row Definitions -->
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
 </table>
+
+<mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>

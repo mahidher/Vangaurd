@@ -7,8 +7,9 @@ import { Observable } from 'rxjs';
 export class TransactionAnalyticsService {
   constructor(private http: HttpClient) {}
 
-  getUserTransactions(): Observable<UserTransactionData[]> {
-    return this.http.get<UserTransactionData[]>('assets/user-transactions.json');
+  // Fetch user (with transactions) from the backend
+  getUser(username: string): Observable<UserTransactionData> {
+    return this.http.get<UserTransactionData>(`http://localhost:8080/api/users/${username}`);
   }
 }
 
