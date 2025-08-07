@@ -98,7 +98,7 @@ curl -X GET http://localhost:8080/api/users/alice/summary
 
 #### With JSON Formatting
 ```bash
-curl -X GET http://localhost:8080/api/users/alice/summary | jq .
+curl -X GET http://localhost:8080/api/users/charlie/summary | jq .
 ```
 
 **Response includes:**
@@ -134,6 +134,22 @@ curl -X PUT http://localhost:8080/api/users/bob \
 ```bash
 curl -X DELETE http://localhost:8080/api/users/alice
 ```
+---
+
+## 🔧 Admin APIs
+
+### 1. Fraud Detection Analysis
+```bash
+curl -X GET http://localhost:8080/api/analyse
+```
+
+#### With JSON Formatting (if jq is installed)
+```bash
+curl -X GET http://localhost:8080/api/analyse | jq .
+```
+
+**Description:** This endpoint invokes the fraud detection Lambda service to analyze user transactions and detect potential fraudulent activities.
+
 ---
 
 ## 💸 Transfer & Transaction APIs

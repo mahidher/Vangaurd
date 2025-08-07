@@ -16,9 +16,9 @@ public class AdminController {
 
     private final FraudDetectLambdaService lambdaService;
 
-    @GetMapping("/analyse/{userName}")
-    public ResponseEntity<String> analyseUser(@PathVariable String userName) {
-        String response = lambdaService.invokeFruadDetection(userName);
+    @GetMapping("/analyse")
+    public ResponseEntity<String> analyseUser() {
+        String response = lambdaService.invokeFraudDetection();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
