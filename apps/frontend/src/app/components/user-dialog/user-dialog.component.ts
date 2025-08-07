@@ -4,9 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { AdminUser } from 'src/app/models/admin-user.model';
 
 export interface UserDialogData {
-  user: { id?: number; name: string; email: string };
+  user: AdminUser;
   isEdit: boolean;
 }
 
@@ -24,18 +25,20 @@ export interface UserDialogData {
     <div mat-dialog-content>
       <form #userForm="ngForm">
         <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="data.user.name" name="name" required />
+          <mat-label>User Name</mat-label>
+          <input matInput [(ngModel)]="data.user.userName" name="userName" required />
         </mat-form-field>
         <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="data.user.email" name="email" required />
+          <mat-label>Balance</mat-label>
+          <input matInput type="number" [(ngModel)]="data.user.balance" name="balance" required />
         </mat-form-field>
       </form>
     </div>
     <div mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-flat-button color="primary" [disabled]="!data.user.name || !data.user.email" (click)="onSave()">
+      <button mat-flat-button color="primary"
+        [disabled]="!data.user.userName || data.user.balance === null || data.user.balance === undefined"
+        (click)="onSave()">
         {{ data.isEdit ? 'Update' : 'Add' }}
       </button>
     </div>

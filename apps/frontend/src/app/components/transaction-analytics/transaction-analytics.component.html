@@ -1,6 +1,9 @@
-<div *ngFor="let user of users" class="user-analytics-row">
+<div *ngIf="user" class="user-analytics-row">
   <span>{{ user.username }}</span>
-  <button mat-raised-button color="primary" (click)="runAnalytics(user)">Run Analytics</button>
-  <span *ngIf="redFlags[user.username] === true" class="red-flag">🚩 Red Flag</span>
-  <span *ngIf="redFlags[user.username] === false" class="no-flag">✅ No Red Flag</span>
+  <button mat-raised-button color="primary" (click)="runAnalytics()">Run Analytics</button>
+  <span *ngIf="analyticsRun && redFlag" class="red-flag">🚩 Red Flag</span>
+  <span *ngIf="analyticsRun && !redFlag" class="no-flag">✅ No Red Flag</span>
+  <div *ngIf="analyticsRun && (!user.transaction_history || user.transaction_history.length === 0)" class="no-flag">
+    No transactions found.
+  </div>
 </div>

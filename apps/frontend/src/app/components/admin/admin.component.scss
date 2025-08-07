@@ -1,7 +1,16 @@
 .mat-toolbar{
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f7f7f9 0%, #3d19a7 100%);
   span{
     color: #fff;
+  }
+  mat-icon{
+    color: #fff;
+  }
+  button{
+    color: #fff;
+    &:hover{
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 }
 .user-table {
@@ -43,4 +52,8 @@
       cursor: not-allowed;
     }
   }
+}
+
+.spacer {
+  flex: 1 1 auto;
 }

@@ -18,8 +18,9 @@ import { MatDialogModule } from '@angular/material/dialog';
   templateUrl: './transaction-analytics.component.html'
 })
 export class TransactionAnalyticsComponent implements OnInit {
-  users: UserTransactionData[] = [];
-  redFlags: { [username: string]: boolean } = {};
+  user?: UserTransactionData;
+  redFlag: boolean = false;
+  analyticsRun: boolean = false; // <-- Add this
 
   constructor(
     private service: TransactionAnalyticsService,
@@ -27,22 +28,20 @@ export class TransactionAnalyticsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.service.getUserTransactions().subscribe((data) => {
-      if (this.data?.username) {
-        this.users = data.filter(u => u.username === this.data.username);
-      } else {
-        this.users = data;
-      }
-    });
-
-    this.service.getUserTransactions().subscribe(analyticsUsers => {
-      const usernames = analyticsUsers.map(u => u.username);
-      this.users = this.users.filter(u => usernames.includes(u.username));
-    });
+    if (this.data?.username) {
+      this.service.getUser(this.data.username).subscribe(userData => {
+        this.user = userData;
+      });
+    }
   }
 
-  runAnalytics(user: UserTransactionData): void {
-    this.redFlags[user.username] = this.hasRedFlag(user.transaction_history);
+  runAnalytics(): void {
+    if (this.user) {
+      const transactions = this.user.transaction_history || [];
+      this.redFlag = this.hasRedFlag(transactions);
+      this.analyticsRun = true;
+      console.log('Analytics run:', { redFlag: this.redFlag, transactions });
+    }
   }
 
   private hasRedFlag(transactions: Transaction[]): boolean {
