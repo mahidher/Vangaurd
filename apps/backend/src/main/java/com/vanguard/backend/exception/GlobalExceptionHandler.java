@@ -26,6 +26,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    @ExceptionHandler(LambdaServiceException.class)
+    public ResponseEntity<ErrorResponse> handleLambdaServiceException(LambdaServiceException ex, WebRequest request) {
+        log.error("LambdaServiceException occurred: {}", ex.getMessage(), ex);
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+            HttpStatus.SERVICE_UNAVAILABLE.value(),
+            "Service Unavailable",
+            "Fraud detection service is currently unavailable. Please try again later.",
+            request.getDescription(false).replace("uri=", "")
+        );
+        
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
         log.error("Unexpected exception occurred: {}", ex.getMessage(), ex);
